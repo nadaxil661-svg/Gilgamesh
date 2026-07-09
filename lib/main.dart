@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart'; // استيراد واجهة تسجيل الدخول
+import 'package:firebase_core/firebase_core.dart';
+import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/screens/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+
   runApp(const MyApp()); // نقطة انطلاق التطبيق
 }
 
@@ -11,14 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // إخفاء علامة الـ debug من الزاوية
+      debugShowCheckedModeBanner: false,
       title: 'Academy App',
-      theme: ThemeData(
-        primarySwatch: Colors.amber, // اللون الأساسي للتطبيق
-        useMaterial3: true, // تفعيل سمات Material 3 الحديثة
-        fontFamily: 'Cairo', // تعيين خط "كاييرو" كخط افتراضي للتطبيق
-      ),
-      home: const LoginScreen(), // الصفحة التي سيبدأ بها التطبيق عند الفتح
+      theme: AppTheme.lightTheme,
+      home: const LoginScreen(),
     );
   }
 }
