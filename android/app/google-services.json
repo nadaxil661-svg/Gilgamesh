@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "891464046903",
+    "project_id": "gilgamesh-c2241",
+    "storage_bucket": "gilgamesh-c2241.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891464046903:android:22a6c5634cf5daa5d822b2",
+        "android_client_info": {
+          "package_name": "com.example.untitled"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzI9hTvx3TsxIzoqqnOVgvPdRsDdVCWWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
