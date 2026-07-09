@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/widgets/app_scaffold.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../core/services/auth_service.dart';
-import 'signup_screen.dart';
 import '../../../home/presentation/screens/navigation_wrapper.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,25 +27,13 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      UserCredential? result = await _authService.signIn(
+      await _authService.signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      if (result != null && result.user != null) {
-        String? role = await _authService.getUserRole(result.user!.uid);
-        
-        if (mounted) {
-          _showSnackBar(
-            'أهلاً بك، دورك هو: ${role == 'admin' ? 'مدير' : role == 'supervisor' ? 'مشرف' : 'طالب'}',
-            Colors.blue,
-          );
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (c) => const NavigationWrapper(isGuest: false)),
-          );
-        }
+      if (mounted) {
+        _showSnackBar('تم تسجيل الدخول بنجاح', Colors.green);
       }
     } catch (e) {
       if (mounted) {
@@ -58,6 +44,26 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _createAdminAccount() async {
+    setState(() => _isLoading = true);
+    try {
+      await _authService.signUp(
+        email: 'admin@admin.com',
+        password: '123456',
+        role: 'admin',
+        name: 'المدير العام',
+      );
+      if (mounted) {
+        _showSnackBar('تم إنشاء حساب المدير بنجاح', Colors.green);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar(e.toString(), Colors.red);
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -103,13 +109,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 isLoading: _isLoading,
               ),
               const SizedBox(height: 20),
-              TextButton(
-                onPressed: () => Navigator.push(context, 
-                  MaterialPageRoute(builder: (c) => const SignupScreen())),
-                child: const Text("ليس لديك حساب؟ إنشاء حساب جديد", 
-                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 10),
               _buildDivider(),
               const SizedBox(height: 20),
               CustomButton(
@@ -118,7 +117,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (c) => const NavigationWrapper(isGuest: true))),
                 isOutlined: true,
               ),
-
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: _createAdminAccount,
+                child: const Text("إنشاء حساب الأدمن (مؤقت)", 
+                  style: TextStyle(color: Colors.grey, fontSize: 12)),
+              ),
             ],
           ),
         ),

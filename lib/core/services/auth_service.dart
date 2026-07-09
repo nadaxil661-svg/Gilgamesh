@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -37,6 +38,49 @@ class AuthService {
       throw _handleAuthError(e);
     } catch (e) {
       throw 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.';
+    }
+  }
+
+  // إنشاء حساب لمشرف أو طالب بواسطة المدير (بدون تسجيل خروج المدير)
+  Future<void> registerUserByAdmin({
+    required String email,
+    required String password,
+    required String role,
+    required String name,
+    Map<String, dynamic>? extraData,
+  }) async {
+    // إنشاء تطبيق Firebase ثانوي مؤقت لعملية التسجيل
+    FirebaseApp tempApp = await Firebase.initializeApp(
+      name: 'TempRegister_${DateTime.now().millisecondsSinceEpoch}',
+      options: Firebase.app().options,
+    );
+
+    try {
+      UserCredential result = await FirebaseAuth.instanceFor(app: tempApp)
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      User? user = result.user;
+      if (user != null) {
+        Map<String, dynamic> userData = {
+          'uid': user.uid,
+          'name': name,
+          'email': email,
+          'role': role,
+          'createdAt': FieldValue.serverTimestamp(),
+        };
+        
+        if (extraData != null) {
+          userData.addAll(extraData);
+        }
+
+        await _firestore.collection('users').doc(user.uid).set(userData);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthError(e);
+    } catch (e) {
+      throw 'حدث خطأ غير متوقع أثناء تسجيل المستخدم.';
+    } finally {
+      await tempApp.delete(); // حذف التطبيق المؤقت فور الانتهاء
     }
   }
 
