@@ -151,36 +151,31 @@ class ReviewsScreen extends StatelessWidget {
   }
 
   Widget _buildAddButton() {
+    if (isGuest) return const SizedBox.shrink();
     return Positioned(
       bottom: 25,
       left: 25,
       right: 25,
-      child: IgnorePointer(
-        ignoring: isGuest,
-        child: Opacity(
-          opacity: isGuest ? 0.2 : 1.0,
-          child: Container(
-            height: 60,
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1), 
-                  blurRadius: 10, offset: const Offset(0, 5),
-                )
-              ],
-            ),
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.edit_note_rounded, color: Colors.black87, size: 26),
-              label: const Text("أضف تقييمك", 
-                style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent, 
-                shadowColor: Colors.transparent,
-              ),
-            ),
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1), 
+              blurRadius: 10, offset: const Offset(0, 5),
+            )
+          ],
+        ),
+        child: ElevatedButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.edit_note_rounded, color: Colors.black87, size: 26),
+          label: const Text("أضف تقييمك", 
+            style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent, 
+            shadowColor: Colors.transparent,
           ),
         ),
       ),

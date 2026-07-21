@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../../shared/widgets/app_scaffold.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../supervisor/presentation/screens/students_list_screen.dart';
+import '../../../supervisor/presentation/screens/trainers_list_screen.dart';
+import '../../../common/presentation/screens/diplomas_screen.dart';
 import 'add_supervisor_screen.dart';
 import 'add_student_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
-  const AdminDashboard({super.key});
+  final String? userRole;
+  const AdminDashboard({super.key, this.userRole});
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +58,30 @@ class AdminDashboard extends StatelessWidget {
               Icons.group_add,
               Colors.blue,
               () => Navigator.push(context, MaterialPageRoute(builder: (c) => const AddStudentScreen())),
+            ),
+            const SizedBox(height: 20),
+            _buildActionCard(
+              context,
+              "إدارة الطلاب",
+              Icons.people,
+              Colors.cyan,
+              () => Navigator.push(context, MaterialPageRoute(builder: (c) => StudentsListScreen(userRole: userRole))),
+            ),
+            const SizedBox(height: 20),
+            _buildActionCard(
+              context,
+              "إدارة المدربين",
+              Icons.person_pin_rounded,
+              Colors.deepPurpleAccent,
+              () => Navigator.push(context, MaterialPageRoute(builder: (c) => TrainersListScreen(userRole: userRole))),
+            ),
+            const SizedBox(height: 20),
+            _buildActionCard(
+              context,
+              "إدارة الدبلومات",
+              Icons.school_rounded,
+              Colors.indigo,
+              () => Navigator.push(context, MaterialPageRoute(builder: (c) => DiplomasScreen(userRole: userRole))),
             ),
             const SizedBox(height: 40),
             const Text(

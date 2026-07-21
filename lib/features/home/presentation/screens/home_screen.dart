@@ -10,8 +10,9 @@ import '../../../student/presentation/screens/profile_screen.dart';
 
 class AcademyHomeScreen extends StatelessWidget {
   final bool isGuest;
+  final String? userRole;
 
-  const AcademyHomeScreen({super.key, this.isGuest = false});
+  const AcademyHomeScreen({super.key, this.isGuest = false, this.userRole});
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +27,14 @@ class AcademyHomeScreen extends StatelessWidget {
             _buildSectionHeader(
               context,
               "الدبلومات المهنية:",
-              const DiplomasScreen(),
+              DiplomasScreen(isGuest: isGuest, userRole: userRole),
             ),
             _buildDiplomasList(),
             const SizedBox(height: 25),
             _buildSectionHeader(
               context,
               "المدربين",
-              const TrainersListScreen(),
+              TrainersListScreen(isGuest: isGuest, userRole: userRole),
             ),
             _buildTrainersList(context),
             const SizedBox(height: 25),
@@ -47,7 +48,7 @@ class AcademyHomeScreen extends StatelessWidget {
             _buildSectionHeader(
               context,
               "آراء الطلاب",
-              const ReviewsScreen(),
+              ReviewsScreen(isGuest: isGuest),
             ),
             _buildReviewsList(),
             const SizedBox(height: 40),
@@ -187,7 +188,7 @@ class AcademyHomeScreen extends StatelessWidget {
           final item = diplomas[index];
           return GestureDetector(
             onTap: () => Navigator.push(context, 
-              MaterialPageRoute(builder: (context) => const DiplomasScreen())),
+              MaterialPageRoute(builder: (context) => DiplomasScreen(isGuest: isGuest, userRole: userRole))),
             child: Container(
               width: 102,
               margin: const EdgeInsets.symmetric(horizontal: 6),
@@ -234,7 +235,7 @@ class AcademyHomeScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: GestureDetector(
               onTap: () => Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => const TrainersListScreen())),
+                MaterialPageRoute(builder: (context) => TrainersListScreen(isGuest: isGuest, userRole: userRole))),
               child: Column(
                 children: [
                   CircleAvatar(
@@ -272,7 +273,7 @@ class AcademyHomeScreen extends StatelessWidget {
           final course = courses[index];
           return GestureDetector(
             onTap: () => Navigator.push(context, 
-              MaterialPageRoute(builder: (context) => CourseDetailsScreen(courseData: course))),
+              MaterialPageRoute(builder: (context) => CourseDetailsScreen(courseData: course, isGuest: isGuest, userRole: userRole))),
             child: Container(
               width: 110,
               margin: const EdgeInsets.symmetric(horizontal: 8),

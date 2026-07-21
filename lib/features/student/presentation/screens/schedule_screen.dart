@@ -4,7 +4,8 @@ import '../../../../core/constants/app_colors.dart';
 
 class ScheduleScreen extends StatefulWidget {
   final bool isGuest;
-  const ScheduleScreen({super.key, this.isGuest = false});
+  final String? userRole;
+  const ScheduleScreen({super.key, this.isGuest = false, this.userRole});
 
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
@@ -16,6 +17,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isStaff = widget.userRole == 'admin' || widget.userRole == 'supervisor';
+
     return AppScaffold(
       title: "جدول الدوام الأسبوعي",
       leading: IconButton(
@@ -29,6 +32,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               const SizedBox(height: 15),
               _buildDaySelector(),
               Expanded(child: _buildScheduleList()),
+              if (isStaff) _buildStaffActions(),
             ],
           ),
           if (widget.isGuest) _buildGuestOverlay(),
@@ -36,6 +40,54 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       ),
     );
   }
+
+  Widget _buildStaffActions() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 55,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.amber.shade200),
+            ),
+            child: const Center(
+              child: Text("إضافة محاضرة +", 
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey)),
+            ),
+          ),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              Expanded(
+                child: _globalActionBtn("تعديل", Icons.edit, Colors.green.shade50, Colors.green),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: _globalActionBtn("حذف", Icons.delete_outline, Colors.red.shade50, Colors.red),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _globalActionBtn(String l, IconData i, Color bg, Color c) => Container(
+    height: 55,
+    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(15)),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(l, style: TextStyle(color: c, fontWeight: FontWeight.bold, fontSize: 18)),
+        const SizedBox(width: 10),
+        Icon(i, color: c, size: 24),
+      ],
+    ),
+  );
 
   Widget _buildDaySelector() {
     return Container(

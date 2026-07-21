@@ -7,11 +7,13 @@ import '../../../home/presentation/screens/navigation_wrapper.dart';
 class TrainerProfileScreen extends StatelessWidget {
   final Map<String, String> trainerData;
   final bool isGuest;
+  final String? userRole;
 
   const TrainerProfileScreen({
     super.key, 
     required this.trainerData, 
-    this.isGuest = false
+    this.isGuest = false,
+    this.userRole,
   });
 
   @override
@@ -27,6 +29,8 @@ class TrainerProfileScreen extends StatelessWidget {
             _buildBioSection(),
             const SizedBox(height: 50),
             _buildDownloadCVButton(),
+            const SizedBox(height: 20),
+            if (userRole == 'admin' || userRole == 'supervisor') _buildEditButton(),
             const SizedBox(height: 30),
           ],
         ),
@@ -157,6 +161,31 @@ class TrainerProfileScreen extends StatelessWidget {
             SizedBox(width: 8), 
             Text("Hala_CV.pdf", style: TextStyle(color: Colors.grey, fontSize: 14)),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEditButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        width: double.infinity,
+        height: 60,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFE500),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            )
+          ],
+        ),
+        child: const Center(
+          child: Text("تعديل البيانات", 
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
       ),
     );

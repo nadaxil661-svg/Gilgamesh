@@ -40,13 +40,11 @@ class AuthWrapper extends StatelessWidget {
             final role = roleSnapshot.data;
 
             // توجيه المستخدم حسب دوره
-            if (role == 'admin') {
-              return const AdminDashboard();
-            } else if (role == 'supervisor') {
-              return const SupervisorDashboard();
+            if (role == 'admin' || role == 'supervisor') {
+              return NavigationWrapper(isGuest: false, userRole: role);
             } else {
               // الافتراضي هو طالب
-              return const NavigationWrapper(isGuest: false);
+              return NavigationWrapper(isGuest: false, userRole: role);
             }
           },
         );

@@ -4,15 +4,20 @@ import '../../../../core/constants/app_colors.dart';
 import 'diploma_details_screen.dart';
 
 class DiplomasScreen extends StatelessWidget {
-  const DiplomasScreen({super.key});
+  final bool isGuest;
+  final String? userRole;
+  const DiplomasScreen({super.key, this.isGuest = false, this.userRole});
 
   @override
   Widget build(BuildContext context) {
+    bool isStaff = userRole == 'admin' || userRole == 'supervisor';
+
     return AppScaffold(
       body: Column(
         children: [
           _buildTopHeader(context),
           _buildDiplomasList(),
+          if (isStaff) _buildStaffActions(),
         ],
       ),
     );
@@ -71,11 +76,12 @@ class DiplomasScreen extends StatelessWidget {
   }
 
   Widget _buildDiplomaCard(BuildContext context, Map<String, dynamic> item) {
+    bool isStaff = userRole == 'admin' || userRole == 'supervisor';
     return GestureDetector(
       onTap: () => Navigator.push(context, 
-        MaterialPageRoute(builder: (context) => DiplomaDetailsScreen(diplomaData: item))),
+        MaterialPageRoute(builder: (context) => DiplomaDetailsScreen(diplomaData: item, isGuest: isGuest))),
       child: Container(
-        height: 100,
+        height: isStaff ? 140 : 100,
         margin: const EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
           color: item['color'],
@@ -86,20 +92,107 @@ class DiplomasScreen extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Row(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
             children: [
-              _buildDiplomaIcon(item['image']),
-              _buildDividerLine(item['accentColor']),
-              _buildDiplomaInfo(item['title'], item['duration'], item['subjects']),
-              const Spacer(),
-              _buildPrice(item['price']),
+              Row(
+                children: [
+                  _buildDiplomaIcon(item['image']),
+                  _buildDividerLine(item['accentColor']),
+                  _buildDiplomaInfo(item['title'], item['duration'], item['subjects']),
+                  const Spacer(),
+                  _buildPrice(item['price']),
+                ],
+              ),
+              if (isStaff) ...[
+                const Spacer(),
+                const Divider(height: 1),
+                const SizedBox(height: 10),
+                _buildItemActionButtons(),
+              ],
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget _buildItemActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        _miniActionButton("تعديل", Icons.edit, const Color(0xFFE8F5E9), Colors.green),
+        const SizedBox(width: 10),
+        _miniActionButton("حذف", Icons.delete_outline, const Color(0xFFFFEBEE), Colors.red),
+      ],
+    );
+  }
+
+  Widget _miniActionButton(String label, IconData icon, Color bg, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11)),
+          const SizedBox(width: 4),
+          Icon(icon, color: color, size: 14),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStaffActions() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 55,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.amber.shade200),
+            ),
+            child: const Center(
+              child: Text("إضافة دبلوم", 
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey)),
+            ),
+          ),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              Expanded(
+                child: _globalActionBtn("تعديل", Icons.edit, Colors.green.shade50, Colors.green),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: _globalActionBtn("حذف", Icons.delete_outline, Colors.red.shade50, Colors.red),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _globalActionBtn(String l, IconData i, Color bg, Color c) => Container(
+    height: 55,
+    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(15)),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(l, style: TextStyle(color: c, fontWeight: FontWeight.bold, fontSize: 18)),
+        const SizedBox(width: 10),
+        Icon(i, color: c, size: 24),
+      ],
+    ),
+  );
 
   Widget _buildDiplomaIcon(String imagePath) {
     return SizedBox(

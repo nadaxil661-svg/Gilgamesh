@@ -4,7 +4,8 @@ import '../../../../core/constants/app_colors.dart';
 
 class GradesScreen extends StatelessWidget {
   final bool isGuest;
-  const GradesScreen({super.key, this.isGuest = false});
+  final String? userRole;
+  const GradesScreen({super.key, this.isGuest = false, this.userRole});
 
   @override
   Widget build(BuildContext context) {

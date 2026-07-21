@@ -6,7 +6,8 @@ import '../../../home/presentation/screens/navigation_wrapper.dart';
 
 class StudentsListScreen extends StatelessWidget {
   final bool isGuest;
-  const StudentsListScreen({super.key, this.isGuest = false});
+  final String? userRole;
+  const StudentsListScreen({super.key, this.isGuest = false, this.userRole});
 
   @override
   Widget build(BuildContext context) {
@@ -54,24 +55,60 @@ class StudentsListScreen extends StatelessWidget {
             )
           ]
         ),
-        child: Row(
+        child: Column(
           children: [
-            CircleAvatar(radius: 28, backgroundImage: AssetImage(students[index]['img']!)),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, 
-                children: [
-                  Text(students[index]['name']!, 
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), 
-                  Text(students[index]['email']!, 
-                    style: const TextStyle(fontSize: 11, color: Colors.grey)),
-                ],
-              ),
+            Row(
+              children: [
+                CircleAvatar(radius: 28, backgroundImage: AssetImage(students[index]['img']!)),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, 
+                    children: [
+                      Text(students[index]['name']!, 
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), 
+                      Text(students[index]['email']!, 
+                        style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.phone_enabled, color: AppColors.primary),
+              ],
             ),
-            const Icon(Icons.phone_enabled, color: AppColors.primary),
+            if (userRole == 'admin' || userRole == 'supervisor') ...[
+              const SizedBox(height: 15),
+              _buildActionButtons(),
+            ],
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        _actionButton("تعديل", Icons.edit, const Color(0xFFE8F5E9), Colors.green),
+        const SizedBox(width: 10),
+        _actionButton("حذف", Icons.delete_outline, const Color(0xFFFFEBEE), Colors.red),
+      ],
+    );
+  }
+
+  Widget _actionButton(String label, IconData icon, Color bg, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Text(label, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+          const SizedBox(width: 5),
+          Icon(icon, color: color, size: 16),
+        ],
       ),
     );
   }

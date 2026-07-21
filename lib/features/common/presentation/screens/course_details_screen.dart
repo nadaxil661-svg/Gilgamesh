@@ -7,15 +7,19 @@ import '../../../home/presentation/screens/navigation_wrapper.dart';
 class CourseDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> courseData;
   final bool isGuest;
+  final String? userRole;
 
   const CourseDetailsScreen({
     super.key,
     required this.courseData,
     this.isGuest = false,
+    this.userRole,
   });
 
   @override
   Widget build(BuildContext context) {
+    bool isStaff = userRole == 'admin' || userRole == 'supervisor';
+
     return AppScaffold(
       title: courseData['title'] ?? "تفاصيل الدورة",
       leading: IconButton(
@@ -30,7 +34,11 @@ class CourseDetailsScreen extends StatelessWidget {
             const SizedBox(height: 30), 
             _buildTitle("حول هذه الدورة"), 
             _buildDesc(), 
-            _buildTrainerRow("م. أحمد الأحمد", "assets/مدرب1.png"), 
+            _buildTrainerRow("م. منار الأحمد", "assets/مدرب1.png"), 
+            if (isStaff) ...[
+              const SizedBox(height: 30),
+              _buildManagementSection(),
+            ],
             const SizedBox(height: 30), 
             _buildWeeksList()
           ],
@@ -126,6 +134,59 @@ class CourseDetailsScreen extends StatelessWidget {
       ),
     ],
   );
+
+  Widget _buildManagementSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const Text("إدارة المادة", 
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _mgmtCard("تعديل معلومات المادة الأساسية", "تعديل", Icons.edit_outlined, Colors.green),
+            _mgmtCard("إدارة الدروس والملفات والاختبارات", "إدارة المحتوى", Icons.folder_open_outlined, Colors.amber),
+            _mgmtCard("حذف المادة بشكل دائم من النظام", "حذف المادة", Icons.delete_outline, Colors.red),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _mgmtCard(String desc, String btn, IconData icon, Color color) {
+    return Container(
+      width: 110,
+      height: 160,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: color.withValues(alpha: 0.1)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10)],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(icon, color: color, size: 28),
+          Text(desc, 
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 9, color: Colors.grey, fontWeight: FontWeight.w500)),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(btn, 
+              textAlign: TextAlign.center,
+              style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildWeeksList() => Column(
     children: [1, 2, 3].map((i) => Container(
